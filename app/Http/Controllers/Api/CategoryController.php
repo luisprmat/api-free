@@ -39,7 +39,7 @@ class CategoryController extends Controller
 
         $category = Category::create($data);
 
-        return $category;
+        return CategoryResource::make($category);
     }
 
     /**
@@ -71,7 +71,7 @@ class CategoryController extends Controller
 
         $category->update($data);
 
-        return $category;
+        return CategoryResource::make($category);
     }
 
     /**
@@ -84,6 +84,6 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-        return $category;
+        return CategoryResource::make($category);
     }
 }
