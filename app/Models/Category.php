@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
@@ -13,7 +14,8 @@ class Category extends Model
     protected $fillable = ['name', 'slug'];
 
     protected $allowIncluded = ['posts', 'posts.user'];
-    protected $allowFilter = ['id', 'name', 'slug'];
+    protected $allowFilters = ['id', 'name', 'slug'];
+    protected $allowSorts = ['id', 'name', 'slug'];
 
     /** RELATIONSHIPS */
     // One To Many
@@ -43,16 +45,39 @@ class Category extends Model
 
     public function scopeFilter(Builder $query)
     {
-        if (empty($this->allowFilter) || empty(request('filter'))) {
+        if (empty($this->allowFilters) || empty(request('filter'))) {
             return;
         }
 
         $filters = request('filter');
-        $allowFilter = collect($this->allowFilter);
+        $allowFilters = collect($this->allowFilters);
 
         foreach ($filters as $filter => $value) {
-            if ($allowFilter->contains($filter)) {
+            if ($allowFilters->contains($filter)) {
                 $query->where($filter, 'LIKE', "%{$value}%");
+            }
+        }
+    }
+
+    public function scopeSort(Builder $query)
+    {
+        if (empty($this->allowSorts) || empty(request('sort'))) {
+            return;
+        }
+
+        $sortFields = explode(',', request('sort'));
+        $allowSorts = collect($this->allowSorts);
+
+        foreach ($sortFields as $sortField) {
+            $direction = 'asc';
+
+            if (Str::of($sortField)->startsWith('-')) {
+                $direction  = 'desc';
+                $sortField = Str::of($sortField)->substr(1);
+            }
+
+            if ($allowSorts->contains($sortField)) {
+                $query->orderBy($sortField, $direction);
             }
         }
     }
