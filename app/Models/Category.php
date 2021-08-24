@@ -9,6 +9,8 @@ class Category extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'slug'];
+
     /** RELATIONSHIPS */
     // One To Many
     public function posts()
