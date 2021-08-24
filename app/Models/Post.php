@@ -13,6 +13,8 @@ class Post extends Model
     const DRAFT = 1;
     const PUBLISHED = 2;
 
+    protected $fillable = ['name', 'slug', 'extract', 'body', 'status', 'category_id', 'user_id'];
+
     /** RELATIONSHIPS */
     // One To Many (Inverse)
     public function user()
