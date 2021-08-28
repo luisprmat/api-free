@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <x-container class="py-8">
+    <x-container id="app" class="py-8">
         <x-form-section>
             <x-slot name="title">
                 Crea un nuevo cliente
@@ -21,7 +21,7 @@
                         Nombre
                     </x-label>
 
-                    <x-input type="text" class="w-full mt-1" />
+                    <x-input v-model="createForm.name" type="text" class="w-full mt-1" />
                 </div>
 
                 <div class="col-span-6 sm:col-span-4">
@@ -29,16 +29,54 @@
                         URL de redirección
                     </x-label>
 
-                    <x-input type="text" class="w-full mt-1" />
+                    <x-input v-model="createForm.redirect" type="text" class="w-full mt-1" />
                 </div>
             </div>
 
             <x-slot name="actions">
-                <x-button>
+                <x-button @click.prevent="store">
                     Crear
                 </x-button>
             </x-slot>
         </x-form-section>
     </x-container>
+
+    @push('js')
+        <script>
+            new Vue({
+                el: '#app',
+                data: {
+                    createForm: {
+                        errors: [],
+                        name: null,
+                        redirect: null
+                    }
+                },
+                methods: {
+                    store() {
+                        axios.post('/oauth/clients', this.createForm)
+                            .then(res => {
+                                this.createForm.name = null
+                                this.createForm.redirect = null
+
+                                Swal.fire(
+                                    '¡Creado!',
+                                    'Su cliente se ha creado correctamente',
+                                    'success'
+                                )
+                            }).catch(e => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'No has completado los datos correspondientes',
+                                })
+                            })
+                    }
+                }
+            });
+
+
+        </script>
+    @endpush
 
 </x-app-layout>
