@@ -17,6 +17,18 @@
 
             <div class="grid grid-cols-6 gap-6">
                 <div class="col-span-6 sm:col-span-4">
+                    <div v-if="createForm.errors.length > 0"
+                        class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        <strong class="font-bold">¡Whoops!</strong>
+                        <span>¡Algo salió mal!</span>
+
+                        <ul>
+                            <li v-for="error in createForm.errors">
+                                @{{ error }}
+                            </li>
+                        </ul>
+                    </div>
+
                     <x-label>
                         Nombre
                     </x-label>
@@ -34,13 +46,13 @@
             </div>
 
             <x-slot name="actions">
-                <x-button @click.prevent="store">
+                <x-button @click.prevent="store" v-bind:disabled="createForm.disabled">
                     Crear
                 </x-button>
             </x-slot>
         </x-form-section>
 
-        <x-form-section>
+        <x-form-section v-if="clients.length > 0">
             <x-slot name="title">
                 Lista de clientes
             </x-slot>
@@ -83,6 +95,7 @@
                 data: {
                     clients: [],
                     createForm: {
+                        disabled: false,
                         errors: [],
                         name: null,
                         redirect: null
@@ -105,6 +118,7 @@
                         }
                     },
                     store() {
+                        this.createForm.disabled = true;
                         axios.post('/oauth/clients', this.createForm)
                             .then(res => {
                                 this.createForm.name = null
@@ -115,12 +129,11 @@
                                     'Su cliente se ha creado correctamente',
                                     'success'
                                 )
+                                this.getClients()
+                                this.createForm.disabled = false
                             }).catch(e => {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Oops...',
-                                    text: 'No has completado los datos correspondientes',
-                                })
+                                this.createForm.errors = _.flatten(_.toArray(e.response.data.errors))
+                                this.createForm.disabled = false
                             })
                     }
                 }
