@@ -69,12 +69,10 @@
                             <tr v-for="token in tokens">
                                 <td class="py-2">@{{ token.name }}</td>
                                 <td class="flex divide-x divide-gray-300 py-2">
-                                    <a v-on:click="" class="pr-2 hover:text-green-600 font-semibold cursor-pointer">
+                                    <a v-on:click="show(token)" class="pr-2 hover:text-green-600 font-semibold cursor-pointer">
                                         Ver
                                     </a>
-                                    <a v-on:click="" class="px-2 hover:text-blue-600 font-semibold cursor-pointer">
-                                        Editar
-                                    </a>
+
                                     <a class="pl-2 hover:text-red-600 font-semibold cursor-pointer"
                                         v-on:click="revoke(token)">
                                         Eliminar
@@ -86,6 +84,29 @@
                 </div>
             </x-form-section>
         </x-container>
+
+        {{-- Modal (Show) --}}
+        <x-dialog-modal modal="showToken.open">
+            <x-slot name="title">
+                Mostrar Access Token
+            </x-slot>
+
+            <x-slot name="content">
+                <div class="space-y-2 overflow-auto">
+                    <p>
+                        <span class="font-semibold">Access Token: </span>
+                        <span v-text="showToken.id"></span>
+                    </p>
+                </div>
+            </x-slot>
+
+            <x-slot name="actions">
+                <button v-on:click="showToken.open = false" type="button"
+                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50">
+                    Cancelar
+                </button>
+            </x-slot>
+        </x-dialog-modal>
     </div>
 
     @push('js')
@@ -98,6 +119,10 @@
                         name: '',
                         errors: [],
                         disabled: false
+                    },
+                    showToken: {
+                        open: false,
+                        id: ''
                     }
                 },
                 mounted() {
@@ -111,6 +136,10 @@
                         } catch (e) {
                             console.log(e.response.data)
                         }
+                    },
+                    show(token) {
+                        this.showToken.open = true,
+                        this.showToken.id = token.id
                     },
                     store() {
                         this.form.disabled = true
