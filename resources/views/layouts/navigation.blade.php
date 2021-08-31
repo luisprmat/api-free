@@ -37,6 +37,11 @@
                         <x-dropdown-link :href="route('clients.index')">
                             Clientes
                         </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('tokens.index')">
+                            API Tokens
+                        </x-dropdown-link>
+
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -80,8 +85,12 @@
 
             <div class="mt-3 space-y-1">
                 <!-- Authentication -->
-                <x-responsive-nav-link :href="route('clients.index')">
+                <x-responsive-nav-link :href="route('clients.index')" :active="request()->routeIs('clients.index')">
                     Clientes
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('tokens.index')" :active="request()->routeIs('tokens.index')">
+                    API Tokens
                 </x-responsive-nav-link>
 
                 <form method="POST" action="{{ route('logout') }}">
