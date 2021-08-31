@@ -61,7 +61,7 @@
                 </x-slot>
 
                 <x-slot name="description">
-                    Aquí podrás encontrar todos lod clientes que has agregado
+                    Aquí podrás encontrar todos los clientes que has agregado
                 </x-slot>
 
                 <div>
@@ -75,7 +75,7 @@
 
                         <tbody class="divide-y divide-gray-300">
                             <tr v-for="client in clients">
-                                <td class="py-2">@{{ client . name }}</td>
+                                <td class="py-2">@{{ client.name }}</td>
                                 <td class="flex divide-x divide-gray-300 py-2">
                                     <a v-on:click="show(client)" class="pr-2 hover:text-green-600 font-semibold cursor-pointer">
                                         Ver
@@ -279,13 +279,13 @@
                     },
                     destroy(client) {
                         Swal.fire({
-                            title: 'Are you sure?',
-                            text: "You won't be able to revert this!",
+                            title: '¿Estás seguro?',
+                            text: "¡No podrás revertir esta acción!",
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, delete it!'
+                            confirmButtonText: '¡Si, bórralo!'
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 axios.delete(`/oauth/clients/${client.id}`)
@@ -294,8 +294,8 @@
                                     })
 
                                 Swal.fire(
-                                    'Deleted!',
-                                    'Your file has been deleted.',
+                                    '¡Borrado!',
+                                    'Su cliente fue borrado con éxito.',
                                     'success'
                                 )
                             }
