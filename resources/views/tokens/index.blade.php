@@ -31,11 +31,29 @@
                                 </li>
                             </ul>
                         </div>
-                        <x-label>
-                            Nombre
-                        </x-label>
+                        <div>
+                            <x-label>
+                                Nombre
+                            </x-label>
 
-                        <x-input v-model="form.name" type="text" class="w-full mt-1" />
+                            <x-input v-model="form.name" type="text" class="w-full mt-1" />
+                        </div>
+
+                        <div class="mt-4" v-if="scopes.length > 0">
+                            <x-label class="mb-1">
+                                Scopes
+                            </x-label>
+
+                            <div v-for="scope in scopes">
+                                <x-label>
+                                    <input
+                                        type="checkbox" name="scopes" :value="scope.id" v-model="form.scopes"
+                                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                    >
+                                    <span class="ml-1">@{{ scope.id }}</span>
+                                </x-label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -115,8 +133,10 @@
                 el: '#app',
                 data: {
                     tokens: [],
+                    scopes: [],
                     form: {
                         name: '',
+                        scopes: [],
                         errors: [],
                         disabled: false
                     },
@@ -126,9 +146,18 @@
                     }
                 },
                 mounted() {
+                    this.getScopes()
                     this.getTokens()
                 },
                 methods: {
+                    async getScopes() {
+                        try {
+                            response = await axios.get('/oauth/scopes')
+                            this.scopes = response.data
+                        } catch (e) {
+                            console.log(e.response.data)
+                        }
+                    },
                     async getTokens() {
                         try {
                             response = await axios.get('/oauth/personal-access-tokens')
@@ -147,8 +176,10 @@
                             .then(response => {
                                 this.form.name = ''
                                 this.form.errors = [],
-                                this.getTokens()
+                                this.form.scopes = [],
                                 this.form.disabled = false
+
+                                this.getTokens()
                             })
                             .catch(e => {
                                 this.form.errors = _.flatten(_.toArray(e.response.data.errors))
