@@ -20,7 +20,10 @@ class DatabaseSeeder extends Seeder
         Storage::deleteDirectory('posts');
         Storage::makeDirectory('posts');
 
-        $this->call(UserSeeder::class);
+        $this->call([
+            RoleSeeder::class,
+            UserSeeder::class
+        ]);
 
         Category::factory()->count(4)->create();
         Tag::factory()->count(8)->create();
